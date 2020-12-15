@@ -1,25 +1,3 @@
-const root = document.createElement('nav');
-const target = document.createElement('div');
-target.setAttribute('id', 'target');
-root.classList.add('navbar', 'navbar-light', 'bg-light', 'd-flex', 'justify-content-center');
-root.insertAdjacentHTML('afterbegin', `
-<h1 class="title">Movie Fight
-<span class="icon">
-    <i class="fas fa-film"></i>
-</span>
-</h1>
-<form class="container-fluid">
-<div class="input-group">
-  <span class="input-group-text" id="basic-addon1"><i class="fas fa-film"></i></span>
-  <input type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
-</div>
-</form>
-`);
-document.body.prepend(target);
-document.body.prepend(root);
-
-
-
 const fetchData = async (searchData) => {
     const response = await axios.get('http://www.omdbapi.com/', {
         params: {
@@ -32,21 +10,60 @@ const fetchData = async (searchData) => {
     }
     return response.data.Search;
 }
-const inputBar = document.querySelector('.form-control');
+
+
+const rootHeader = document.createElement('section');
+
+rootHeader.classList.add('hero', 'is-primary', 'is-bold');
+
+rootHeader.insertAdjacentHTML('afterbegin', `
+<div class="hero-body">
+<div class="container">
+  <h1 class="title">
+    Movie Fight
+    <span class="icon">
+      <i class="fas fa-film"></i>
+    </span>
+  </h1>
+</div>
+</div>
+`);
+
+document.body.prepend(rootHeader);
+rootHeader.insertAdjacentHTML('afterend', 
+`<div class="container">
+    <div class="autocomplete">
+        <label><b>Search For a Movie</b></label>
+        <input class="input" />
+        <div class="dropdown">
+            <div class="dropdown-menu">
+                <div class="dropdown-content results"></div>
+            </div>
+        </div>
+    </div>
+</div>`);
+
+
+const input = document.querySelector('input');
+const dropdown = document.querySelector('.dropdown');
+const resultsWrapper = document.querySelector('.results');
+
 
 const onInput = async (event) => {
     const movies = await fetchData(event.target.value);
 
-    for (let movie of movies) {
-        const div = document.createElement('div');
-        div.innerHTML = `
-        <img src="${movie.Poster}">
-        <h1>${movie.Title}</h1>
-        `
+    dropdown.classList.add('is-active');
 
-        document.querySelector('#target').appendChild(div);
+    for (let movie of movies) {
+        const option = document.createElement('a');
+        option.classList.add('dropdown-item');
+        option.insertAdjacentHTML('afterbegin', `
+            <img src="${movie.Poster}"/>
+            <h1>${movie.Title}</h1>
+        `);
+        resultsWrapper.appendChild(option);
     }
 
 }
-inputBar.addEventListener('input', debounce(onInput));
+input.addEventListener('input', debounce(onInput));
 
