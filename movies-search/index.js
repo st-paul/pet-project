@@ -62,11 +62,40 @@ const onMovieSelected = async (movie, summaryElm, side) => {
     };
 };
 
-const runCompare = (leftMovie, rightMovie) => {
-    console.log(leftMovie.imdbRating)
+const runCompare = () => {
+    const leftSideState = document.querySelectorAll('#left-summary .notification'); 
+    const rightSideState = document.querySelectorAll('#right-summary .notification');
+    
+    leftSideState.forEach((leftState, index) => {
+        const rightState = rightSideState[index];
+        
+        const leftSideValue = parseInt(leftState.dataset.value);
+        const rightSideValue = parseInt(rightState.dataset.value);
+
+        if (rightSideValue > leftSideValue) {
+            leftState.classList.remove('is-primary');
+            leftState.classList.add('is-warning');
+        } else {
+            rightState.classList.remove('is-primary');
+            rightState.classList.add('is-warning');
+        }
+    });
 };
 
 const movieTemplate = (movieObj) => {
+    const boxOffice = parseInt(movieObj.BoxOffice.replace(/\$/g, '').replace(/,/g, ''));
+    const metascore = parseInt(movieObj.Metascore);
+    const imdbRating = parseInt(movieObj.imdbRating);
+    const imdbVotes = parseInt(movieObj.imdbVotes.replace(/,/g, ''));
+    const awards = movieObj.Awards.split(' ').reduce((prev, word) => {
+        const value = parseInt(word);
+        if (isNaN(word)) {
+            return prev;
+        } else {
+            return prev + value;
+        }
+    }, 0);
+
     return `
     <article class="media">
     <figure class="media-left">
@@ -82,23 +111,23 @@ const movieTemplate = (movieObj) => {
       </div>
     </div>
     </article>
-    <article class="notification is-primary">
+    <article data-value="${awards}" class="notification is-primary">
         <p class="title">${movieObj.Awards}</p>
         <p class="subtitle">Awards</p>
     </article>
-    <article class="notification is-primary">
+    <article data-value="${boxOffice}" class="notification is-primary">
         <p class="title">${movieObj.BoxOffice}</p>
         <p class="subtitle">Box Office</p>
     </article>
-    <article class="notification is-primary">
+    <article data-value="${metascore}" class="notification is-primary">
         <p class="title">${movieObj.Metascore}</p>
         <p class="subtitle">Metascore</p>
     </article>
-    <article class="notification is-primary">
+    <article data-value="${imdbRating}" class="notification is-primary">
         <p class="title">${movieObj.imdbRating}</p>
         <p class="subtitle">IMDB Rating</p>
     </article>
-    <article class="notification is-primary">
+    <article data-value="${imdbVotes}" class="notification is-primary">
         <p class="title">${movieObj.imdbVotes}</p>
         <p class="subtitle">IMDB Votes</p>
     </article>

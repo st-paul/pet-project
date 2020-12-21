@@ -1,6 +1,6 @@
 const createAutoComplete = ({ root, renderOption, onOptionSelect, inputValue, fetchData}) => {
     root.innerHTML = `
-    <label><b>Search</b></label>
+    <label><b>Поиск (only English)</b></label>
     <input class="input">
     <div class="dropdown">
       <div class="dropdown-menu">
@@ -15,7 +15,7 @@ const createAutoComplete = ({ root, renderOption, onOptionSelect, inputValue, fe
 
     const onInput = async (event) => {
         const items = await fetchData(event.target.value);
-        
+
         if (items.length === 0) {
             dropdown.classList.remove('is-active');
             return;
@@ -46,6 +46,6 @@ const createAutoComplete = ({ root, renderOption, onOptionSelect, inputValue, fe
     document.addEventListener('click', (event) => {
         if (!root.contains(event.target)) {
            dropdown.classList.remove('is-active');
-        }
+        };
     });
 };
